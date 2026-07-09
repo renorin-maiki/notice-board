@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>社内お知らせ / ประกาศบริษัท</title>
+<style>
+  :root{
+    --blue:#1f4e8c;
+    --blue-light:#e8f0fb;
+    --gray:#666;
+    --border:#e0e0e0;
+    --bg:#f5f6f8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Leelawadee UI","Hiragino Kaku Gothic ProN","Noto Sans Thai","Noto Sans JP",sans-serif;
+    background:var(--bg);
+    color:#222;
+  }
+  header{
+    background:var(--blue);
+    color:#fff;
+    padding:18px 16px 16px;
+    position:sticky;
+    top:0;
+    z-index:10;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+  }
+  header h1{
+    margin:0 0 2px;
+    font-size:19px;
+    font-weight:700;
+  }
+  header p{
+    margin:0;
+    font-size:13px;
+    opacity:.9;
+  }
+  .lang-toggle{
+    display:flex;
+    gap:6px;
+    margin-top:12px;
+  }
+  .lang-toggle button{
+    flex:1;
+    padding:8px 0;
+    border:none;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    background:rgba(255,255,255,.18);
+    color:#fff;
+  }
+  .lang-toggle button.active{
+    background:#fff;
+    color:var(--blue);
+  }
+  main{
+    max-width:640px;
+    margin:0 auto;
+    padding:14px;
+  }
+  .card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:12px;
+    margin-bottom:14px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(0,0,0,.05);
+  }
+  .card-head{
+    padding:14px 16px 10px;
+    border-bottom:1px solid var(--border);
+  }
+  .badge{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    color:var(--blue);
+    background:var(--blue-light);
+    padding:3px 9px;
+    border-radius:999px;
+    margin-bottom:8px;
+  }
+  .card-title{
+    font-size:16px;
+    font-weight:700;
+    margin:0 0 4px;
+    line-height:1.4;
+  }
+  .card-date{
+    font-size:12px;
+    color:var(--gray);
+  }
+  .card-body{
+    padding:12px 16px 16px;
+    font-size:14px;
+    line-height:1.7;
+    color:#333;
+    white-space:pre-line;
+  }
+  .card-actions{
+    padding:0 16px 16px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    display:inline-block;
+    font-size:13px;
+    font-weight:600;
+    padding:9px 14px;
+    border-radius:8px;
+    text-decoration:none;
+    background:var(--blue);
+    color:#fff;
+  }
+  .btn.secondary{
+    background:#fff;
+    color:var(--blue);
+    border:1px solid var(--blue);
+  }
+  .lang-block{display:none;}
+  .lang-block.show{display:block;}
+  footer{
+    text-align:center;
+    font-size:11px;
+    color:var(--gray);
+    padding:20px 16px 30px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 id="hTitle">社内お知らせボード</h1>
+  <p id="hSub">スマートフォンでいつでも確認できます</p>
+  <div class="lang-toggle">
+    <button id="btnJa" class="active" onclick="setLang('ja')">日本語</button>
+    <button id="btnTh" onclick="setLang('th')">ภาษาไทย</button>
+  </div>
+</header>
+
+<main id="noticeList"></main>
+
+<footer>
+  更新: このページのHTMLファイルを編集するだけでお知らせを追加・変更できます。<br>
+  QRコードで従業員がすぐに開けます。
+</footer>
+
+<script>
+// ここにお知らせを追加していくだけで一覧が増えます
+const notices = [
+  {
+    date: "2026.07.07",
+    ja: {
+      title: "夏の交通安全県民運動における当社の交通安全活動",
+      body: "7月11日(土)〜20日(月)の10日間「夏の交通安全県民運動」が行われます。\n本社・豊田工場周辺での立哨活動(7/16)、安城警察署員による交通安全講話(7/23 16:00〜17:00)を実施します。\n詳細は添付の資料をご確認ください。"
+    },
+    th: {
+      title: "กิจกรรมความปลอดภัยทางถนนของบริษัท ในการรณรงค์ความปลอดภัยทางถนนภาคฤดูร้อน",
+      body: "การรณรงค์ความปลอดภัยทางถนนภาคประชาชนฤดูร้อน จัดขึ้นระหว่างวันที่ 11–20 กรกฎาคม\nมีกิจกรรมยืนเฝ้าดูแลบริเวณสำนักงานใหญ่และโรงงานโทโยต้า (16 ก.ค.) และการบรรยายความปลอดภัยทางถนนโดยตำรวจอันโจ (23 ก.ค. 16:00–17:00 น.)\nรายละเอียดดูได้จากเอกสารที่แนบมา"
+    },
+    filePdf: "夏の交通安全県民運動_TH_v2.pdf",
+    fileWord: "夏の交通安全県民運動_TH.docx"
+  },
+  {
+    date: "2026.07.07",
+    ja: {
+      title: "2026年度 交通安全講話のご案内",
+      body: "7月23日(木)16:00〜17:00、本社事務棟3F社員食堂にて安城警察署員による交通安全講話を行います。\n対象者は各部署希望者・安全衛生委員・新入社員等です。\n詳細は添付の資料をご確認ください。"
+    },
+    th: {
+      title: "คำบรรยายความปลอดภัยทางถนน ประจำปีงบประมาณ 2026",
+      body: "วันพฤหัสบดีที่ 23 กรกฎาคม เวลา 16:00–17:00 น. ที่โรงอาหารพนักงาน ชั้น 3 อาคารสำนักงานใหญ่ จะมีการบรรยายความปลอดภัยทางถนนโดยเจ้าหน้าที่สถานีตำรวจอันโจ\nผู้เข้าร่วมคือผู้สมัครใจจากแต่ละแผนก คณะกรรมการความปลอดภัยฯ และพนักงานใหม่\nรายละเอียดดูได้จากเอกสารที่แนบมา"
+    },
+    filePdf: "2026年度_交通安全講話のご案内_TH_v2.pdf",
+    fileWord: "2026年度_交通安全講話のご案内_TH.docx"
+  }
+];
+
+let lang = "ja";
+
+function setLang(l){
+  lang = l;
+  document.getElementById("btnJa").classList.toggle("active", l==="ja");
+  document.getElementById("btnTh").classList.toggle("active", l==="th");
+  document.getElementById("hTitle").textContent = l==="ja" ? "社内お知らせボード" : "บอร์ดประกาศบริษัท";
+  document.getElementById("hSub").textContent = l==="ja" ? "スマートフォンでいつでも確認できます" : "ดูได้ทุกที่ทุกเวลาจากสมาร์ทโฟน";
+  render();
+}
+
+function render(){
+  const list = document.getElementById("noticeList");
+  list.innerHTML = "";
+  notices.forEach(n=>{
+    const t = n[lang];
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="card-head">
+        <span class="badge">${n.date}</span>
+        <div class="card-title">${t.title}</div>
+      </div>
+      <div class="card-body">${t.body}</div>
+      <div class="card-actions">
+        <a class="btn" href="${n.filePdf}" target="_blank">${lang==="ja" ? "資料を見る (PDF)" : "เปิดเอกสาร (PDF)"}</a>
+        <a class="btn secondary" href="${n.fileWord}" target="_blank">${lang==="ja" ? "Word版" : "ไฟล์ Word"}</a>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+render();
+</script>
+
+</body>
+</html>
